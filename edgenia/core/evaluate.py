@@ -2,28 +2,28 @@ from typing import Dict, Any
 from langchain_groq import ChatGroq
 
 class Evaluator:
-    """Module d'évaluation - Mesure les résultats et apprend"""
+    """Module d'évaluation et d'amélioration continue"""
     
     def __init__(self):
         self.llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.4)
     
-    def evaluate_campaign(self, campaign_result: Dict, previous_context: Dict) -> Dict:
-        """Évalue les résultats d'une campagne et propose des améliorations"""
+    def evaluate(self, campaign_result: Dict, previous_context: Dict) -> Dict[str, Any]:
+        """Évalue les résultats et propose des améliorations"""
         prompt = f"""
-Analyse les résultats de cette campagne :
+Résultats de campagne :
+{campaign_result}
 
-{ campaign_result }
+Contexte entreprise :
+{previous_context.get('company_profile', {})}
 
-Contexte précédent :
-{ previous_context['company_profile'] }
-
-Retourne un JSON avec :
+Analyse les résultats et propose des améliorations.
+Retourne uniquement un JSON :
 {{
-  "performance": "Bonne / Moyenne / À améliorer",
+  "performance": "Bonne/Moyenne/À améliorer",
   "key_insights": ["insight 1", "insight 2"],
   "lessons_learned": ["leçon 1", "leçon 2"],
-  "next_actions": ["action 1", "action 2"],
-  "improvement_score": 75
+  "improvement_suggestions": ["suggestion 1", "suggestion 2"],
+  "next_cycle_recommendation": "Recommandation pour le prochain cycle"
 }}
 """
         try:
@@ -37,8 +37,8 @@ Retourne un JSON avec :
         
         return {
             "performance": "Moyenne",
-            "key_insights": ["Besoin de plus de données"],
-            "lessons_learned": ["Personnalisation importante"],
-            "next_actions": ["Améliorer le ciblage"],
-            "improvement_score": 65
+            "key_insights": ["Taux d'ouverture correct", "Taux de conversion à améliorer"],
+            "lessons_learned": ["La personnalisation augmente l'engagement"],
+            "improvement_suggestions": ["Tester différents sujets d'email", "Segmenter mieux l'audience"],
+            "next_cycle_recommendation": "Améliorer la personnalisation et tester A/B"
         }
