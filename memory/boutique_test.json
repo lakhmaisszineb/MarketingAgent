@@ -1,0 +1,113 @@
+{
+  "company_profile": {
+    "company_name": "Boutique Chic",
+    "sector": "Mode & Vêtements",
+    "main_objectives": [
+      "Augmenter les ventes"
+    ],
+    "channels": [
+      "Email",
+      "Instagram"
+    ],
+    "customer_persona": "Femmes âgées de 25 à 40 ans",
+    "challenges": [
+      "Manque de personnalisation"
+    ],
+    "initial_recommendations": [
+      "Développer une stratégie de personnalisation pour améliorer l'expérience client",
+      "Utiliser les données client pour créer des campagnes ciblées sur les canaux choisis"
+    ],
+    "data_readiness": "Les données fournies sont limitées mais offrent une bonne base pour commencer l'analyse du secteur et de la clientèle. Il serait bénéfique de collecter davantage de données pour affiner les stratégies marketing."
+  },
+  "data_summary": {
+    "file_name": "test_clients.csv",
+    "rows": 2,
+    "columns": [
+      "email",
+      "nom_complet",
+      "derniere_vente",
+      "montant"
+    ],
+    "column_count": 4,
+    "missing_values": {
+      "email": 0,
+      "nom_complet": 0,
+      "derniere_vente": 0,
+      "montant": 0
+    },
+    "data_types": {
+      "email": "str",
+      "nom_complet": "str",
+      "derniere_vente": "str",
+      "montant": "int64"
+    },
+    "sample_data": [
+      {
+        "email": "c1@test.com",
+        "nom_complet": "Sara Benali",
+        "derniere_vente": "2025-04-10",
+        "montant": 650
+      },
+      {
+        "email": "c2@test.com",
+        "nom_complet": "Omar Farid",
+        "derniere_vente": "2025-05-20",
+        "montant": 1250
+      }
+    ],
+    "basic_stats": {
+      "numeric": {
+        "montant": {
+          "count": 2.0,
+          "mean": 950.0,
+          "std": 424.26406871192853,
+          "min": 650.0,
+          "25%": 800.0,
+          "50%": 950.0,
+          "75%": 1100.0,
+          "max": 1250.0
+        }
+      },
+      "email": {
+        "unique_values": 2,
+        "missing_percentage": 0.0
+      },
+      "nom_complet": {
+        "unique_values": 2,
+        "missing_percentage": 0.0
+      },
+      "derniere_vente": {
+        "unique_values": 2,
+        "missing_percentage": 0.0
+      },
+      "montant": {
+        "unique_values": 2,
+        "missing_percentage": 0.0
+      }
+    },
+    "potential_customer_columns": {
+      "email": [
+        "email"
+      ],
+      "name": [
+        "nom_complet"
+      ],
+      "purchase_date": [],
+      "revenue": [
+        "montant"
+      ],
+      "phone": []
+    },
+    "recommendations": [
+      "Dataset assez petit. Les résultats peuvent manquer de précision."
+    ]
+  },
+  "column_mapping": {
+    "email": "email",
+    "nom_complet": "full_name",
+    "derniere_vente": "last_purchase_date",
+    "montant": "total_revenue"
+  },
+  "interaction_history": [],
+  "last_updated": "2026-06-27T15:12:43.751669"
+}
