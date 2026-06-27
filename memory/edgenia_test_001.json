@@ -1,0 +1,120 @@
+{
+  "company_profile": {
+    "company_name": "Boutique Chic",
+    "sector": "Mode & Vêtements",
+    "main_objectives": [
+      "Augmenter les ventes",
+      "Fidéliser les clients existants"
+    ],
+    "channels": [
+      "Email",
+      "Instagram"
+    ],
+    "customer_persona": "Femmes 25-40 ans, cherchant des vêtements élégants",
+    "challenges": [
+      "Manque de personnalisation"
+    ],
+    "initial_recommendations": [
+      "Développer une stratégie de personnalisation pour améliorer l'expérience client",
+      "Utiliser les données client pour créer des campagnes ciblées sur les canaux choisis"
+    ],
+    "data_readiness": "Les données fournies sont suffisantes pour établir un profil de base de l'entreprise, mais des informations supplémentaires sur les performances actuelles et les objectifs spécifiques seraient nécessaires pour élaborer une stratégie marketing plus détaillée et efficace."
+  },
+  "data_summary": {
+    "file_name": "demo_clients.csv",
+    "rows": 3,
+    "columns": [
+      "email",
+      "nom_complet",
+      "derniere_vente",
+      "valeur_achat"
+    ],
+    "column_count": 4,
+    "missing_values": {
+      "email": 0,
+      "nom_complet": 0,
+      "derniere_vente": 0,
+      "valeur_achat": 0
+    },
+    "data_types": {
+      "email": "str",
+      "nom_complet": "str",
+      "derniere_vente": "str",
+      "valeur_achat": "float64"
+    },
+    "sample_data": [
+      {
+        "email": "c1@test.com",
+        "nom_complet": "Leila Mansouri",
+        "derniere_vente": "2025-05-10",
+        "valeur_achat": 890.0
+      },
+      {
+        "email": "c2@test.com",
+        "nom_complet": "Omar Benali",
+        "derniere_vente": "2024-12-20",
+        "valeur_achat": 1450.0
+      },
+      {
+        "email": "c3@test.com",
+        "nom_complet": "Sofia Alami",
+        "derniere_vente": "2025-06-01",
+        "valeur_achat": 320.0
+      }
+    ],
+    "basic_stats": {
+      "numeric": {
+        "valeur_achat": {
+          "count": 3.0,
+          "mean": 886.6666666666666,
+          "std": 565.0073745831406,
+          "min": 320.0,
+          "25%": 605.0,
+          "50%": 890.0,
+          "75%": 1170.0,
+          "max": 1450.0
+        }
+      },
+      "email": {
+        "unique_values": 3,
+        "missing_percentage": 0.0
+      },
+      "nom_complet": {
+        "unique_values": 3,
+        "missing_percentage": 0.0
+      },
+      "derniere_vente": {
+        "unique_values": 3,
+        "missing_percentage": 0.0
+      },
+      "valeur_achat": {
+        "unique_values": 3,
+        "missing_percentage": 0.0
+      }
+    },
+    "potential_customer_columns": {
+      "email": [
+        "email"
+      ],
+      "name": [
+        "nom_complet"
+      ],
+      "purchase_date": [
+        "valeur_achat"
+      ],
+      "revenue": [],
+      "phone": []
+    },
+    "recommendations": [
+      "Dataset assez petit. Les résultats peuvent manquer de précision."
+    ]
+  },
+  "column_mapping": {
+    "email": "email",
+    "nom_complet": "full_name",
+    "derniere_vente": "last_purchase_date",
+    "valeur_achat": "average_order_value"
+  },
+  "interaction_history": [],
+  "last_updated": "2026-06-27T12:28:58.804435"
+}
