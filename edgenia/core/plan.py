@@ -3,28 +3,29 @@ from langchain_groq import ChatGroq
 from edgenia.core.reason import Reasoner
 
 class Planner:
-    """Module de planification avancé"""
+    """Module de planification"""
     
     def __init__(self):
         self.llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.5)
         self.reasoner = Reasoner()
     
     def generate_plan(self, observation: Dict, analysis: Dict, company_context: Dict) -> Dict[str, Any]:
-        """Génère un plan d'action avec raisonnement"""
-        reasoning = self.reasoner.reason(observation, analysis, {})
+        reasoning = self.reasoner.reason(observation, analysis, company_context)
         
         prompt = f"""
-Raisonnement :
-{reasoning.get('reasoning_summary', '')}
+Contexte : {company_context.get('company_profile', {})}
+Observation : {observation}
+Analyse : {analysis}
 
-Contexte entreprise :
-{company_context['company_profile']}
-
-Analyse :
-{analysis}
-
-Génère un plan d'action réaliste pour les 15 prochains jours.
-Retourne uniquement un JSON.
+Génère un plan d'action réaliste.
+Retourne uniquement un JSON avec cette structure exacte :
+{{
+  "short_term_plan": [
+    {{"action": "Nom de l'action", "priority": "high", "channel": "Email", "expected_impact": "Description courte"}}
+  ],
+  "key_metrics_to_track": ["Open Rate", "Conversion Rate"],
+  "overall_strategy": "Stratégie globale en une phrase"
+}}
 """
         try:
             response = self.llm.invoke(prompt)
@@ -37,9 +38,13 @@ Retourne uniquement un JSON.
         except:
             pass
         
+        # Fallback fiable
         return {
-            "short_term_plan": [],
-            "key_metrics_to_track": [],
-            "overall_strategy": "Améliorer la personnalisation",
+            "short_term_plan": [
+                {"action": "Segmenter les clients", "priority": "high", "channel": "Internal", "expected_impact": "Meilleure personnalisation"},
+                {"action": "Lancer première campagne email", "priority": "high", "channel": "Email", "expected_impact": "Augmentation de l'engagement"}
+            ],
+            "key_metrics_to_track": ["Open Rate", "Click Rate", "Conversion Rate"],
+            "overall_strategy": "Commencer par la personnalisation basée sur les données clients",
             "reasoning": reasoning
         }

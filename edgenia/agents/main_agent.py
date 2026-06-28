@@ -7,17 +7,12 @@ from edgenia.core.reason import Reasoner
 from edgenia.core.plan import Planner
 from edgenia.core.execute import Executor
 from edgenia.core.evaluate import Evaluator
+from edgenia.tools.tool_registry import ToolRegistry
 
-# Configuration des logs
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class EdgeniaAgent:
-    """
-    Agent IA Autonome Principal - Edgenia
-    Version 1 améliorée
-    """
-    
     def __init__(self, company_id: str = "default"):
         self.company_id = company_id
         self.company_manager = CompanyManager(company_id)
@@ -29,48 +24,37 @@ class EdgeniaAgent:
         self.executor = Executor()
         self.evaluator = Evaluator()
         
-        logger.info(f"Agent initialisé pour l'entreprise {company_id}")
+        self.tools = ToolRegistry()
+        self._register_tools()
+        
+        logger.info(f"Agent Edgenia initialisé avec Tool Calling pour {company_id}")
+    
+    def _register_tools(self):
+        self.tools.register("send_email", self.executor.generate_email, "Envoie un email via l'agent emailing externe")
+        self.tools.register("publish_post", self.executor.generate_social_post, "Publie un post sur Instagram/Facebook")
+        self.tools.register("publish_blog", lambda **kwargs: {"status": "todo - appeler agent WordPress"}, "Publie un article sur WordPress")
     
     def initialize(self, onboarding_responses: Dict, data_file_path: str) -> Dict:
-        """Initialise une nouvelle entreprise"""
         try:
-            logger.info(f"Démarrage onboarding pour {onboarding_responses.get('1')}")
-            result = self.company_manager.full_onboarding_and_data_processing(
-                onboarding_responses, data_file_path
-            )
-            logger.info("Initialisation réussie")
+            logger.info("Démarrage onboarding...")
+            result = self.company_manager.full_onboarding_and_data_processing(onboarding_responses, data_file_path)
+            logger.info("Onboarding terminé avec succès")
             return result
         except Exception as e:
-            logger.error(f"Erreur lors de l'initialisation: {e}")
-            return {"error": str(e)}
+            logger.error(f"Erreur onboarding: {e}")
+            return {"status": "error", "message": str(e)}
     
-    def run_cycle(self) -> Dict[str, Any]:
-        """Exécute un cycle complet d'autonomie"""
+    def run_cycle(self) -> Dict:
         try:
-            logger.info("Début d'un nouveau cycle")
+            logger.info("Début du cycle autonome")
             
             observation = self.observer.observe()
             analysis = self.analyzer.analyze(observation, self.company_manager.memory.get_full_context())
             reasoning = self.reasoner.reason(observation, analysis, self.company_manager.memory.get_full_context())
             plan = self.planner.generate_plan(observation, analysis, self.company_manager.memory.get_full_context())
             
-            # Exécution du premier élément du plan
-            if plan.get("short_term_plan"):
-                first_action = plan["short_term_plan"][0]
-                content = self.executor.generate_email(first_action, self.company_manager.memory.get_full_context())
-            
-            # Évaluation
-            evaluation = self.evaluator.evaluate({"open_rate": 23}, self.company_manager.memory.get_full_context())
-            
             logger.info("Cycle terminé avec succès")
-            return {
-                "status": "success",
-                "observation": observation,
-                "analysis": analysis,
-                "reasoning": reasoning,
-                "plan": plan,
-                "evaluation": evaluation
-            }
+            return {"status": "success", "plan": plan}
         except Exception as e:
-            logger.error(f"Erreur pendant le cycle: {e}")
+            logger.error(f"Erreur dans le cycle: {e}")
             return {"status": "error", "message": str(e)}
