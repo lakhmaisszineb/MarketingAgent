@@ -3,21 +3,16 @@ from typing import Dict, Any, List
 import json
 
 class DataProfiler:
-    """Analyse automatique d'un dataset client (CSV ou Excel)"""
+    """Analyse automatique et intelligente d'un dataset client"""
     
     def analyze_dataset(self, file_path: str) -> Dict[str, Any]:
-        """
-        Analyse complète d'un fichier de données client.
-        Retourne un rapport détaillé.
-        """
         try:
-            # Charger le fichier (CSV ou Excel)
             if file_path.endswith('.csv'):
                 df = pd.read_csv(file_path)
             elif file_path.endswith(('.xlsx', '.xls')):
                 df = pd.read_excel(file_path)
             else:
-                raise ValueError("Format de fichier non supporté. Utilisez CSV ou Excel.")
+                raise ValueError("Format non supporté (CSV ou Excel)")
 
             report = {
                 "file_name": file_path.split('/')[-1],
@@ -29,7 +24,8 @@ class DataProfiler:
                 "sample_data": df.head(5).to_dict(orient='records'),
                 "basic_stats": {},
                 "potential_customer_columns": self._detect_customer_columns(df),
-                "recommendations": []
+                "recommendations": [],
+                "data_quality_score": self._calculate_quality_score(df)
             }
 
             # Statistiques numériques
@@ -37,21 +33,21 @@ class DataProfiler:
             if len(numeric_cols) > 0:
                 report["basic_stats"]["numeric"] = df[numeric_cols].describe().to_dict()
 
-            # Valeurs uniques par colonne
+            # Valeurs uniques
             for col in df.columns:
                 report["basic_stats"][col] = {
                     "unique_values": int(df[col].nunique()),
                     "missing_percentage": float(df[col].isnull().mean() * 100)
                 }
 
-            # Recommandations automatiques
+            # Recommandations intelligentes
             if len(df) < 100:
-                report["recommendations"].append("Dataset assez petit. Les résultats peuvent manquer de précision.")
+                report["recommendations"].append("Dataset petit - résultats à prendre avec prudence")
             
             high_missing = [col for col, pct in report["basic_stats"].items() 
                           if isinstance(pct, dict) and pct.get("missing_percentage", 0) > 30]
             if high_missing:
-                report["recommendations"].append(f"Colonnes avec beaucoup de valeurs manquantes : {high_missing}")
+                report["recommendations"].append(f"Colonnes avec beaucoup de données manquantes : {high_missing}")
 
             return report
 
@@ -59,13 +55,23 @@ class DataProfiler:
             return {"error": str(e)}
 
     def _detect_customer_columns(self, df: pd.DataFrame) -> Dict[str, List[str]]:
-        """Détecte les colonnes importantes (email, nom, date d'achat, etc.)"""
+        """Détection intelligente des colonnes clients"""
         columns = df.columns.str.lower()
         mapping = {
             "email": [col for col in df.columns if 'email' in col.lower()],
-            "name": [col for col in df.columns if any(x in col.lower() for x in ['nom', 'name', 'prenom', 'first', 'last'])],
-            "purchase_date": [col for col in df.columns if any(x in col.lower() for x in ['date', 'achat', 'purchase', 'order'])],
-            "revenue": [col for col in df.columns if any(x in col.lower() for x in ['montant', 'revenue', 'price', 'amount', 'total'])],
-            "phone": [col for col in df.columns if 'phone' in col.lower() or 'tel' in col.lower()],
+            "name": [col for col in df.columns if any(x in col.lower() for x in ['nom', 'name', 'prenom', 'first', 'last', 'client'])],
+            "purchase_date": [col for col in df.columns if any(x in col.lower() for x in ['date', 'achat', 'purchase', 'order', 'vente'])],
+            "revenue": [col for col in df.columns if any(x in col.lower() for x in ['montant', 'revenue', 'price', 'amount', 'total', 'ca'])],
+            "phone": [col for col in df.columns if any(x in col.lower() for x in ['phone', 'tel', 'portable'])],
+            "city": [col for col in df.columns if any(x in col.lower() for x in ['ville', 'city', 'location'])],
         }
         return mapping
+
+    def _calculate_quality_score(self, df: pd.DataFrame) -> int:
+        """Score de qualité du dataset"""
+        score = 100
+        missing_ratio = df.isnull().mean().mean() * 100
+        score -= int(missing_ratio * 0.5)
+        if len(df) < 50:
+            score -= 30
+        return max(0, min(100, score))

@@ -3,7 +3,7 @@ from langchain_groq import ChatGroq
 from edgenia.core.reason import Reasoner
 
 class Planner:
-    """Module de planification"""
+    """Module de planification structurée"""
     
     def __init__(self):
         self.llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.5)
@@ -13,17 +13,18 @@ class Planner:
         reasoning = self.reasoner.reason(observation, analysis, company_context)
         
         prompt = f"""
-Contexte : {company_context.get('company_profile', {})}
+Contexte entreprise : {company_context.get('company_profile', {})}
+
 Observation : {observation}
 Analyse : {analysis}
 
-Génère un plan d'action réaliste.
+Génère un plan d'action réaliste pour les 15 prochains jours.
 Retourne uniquement un JSON avec cette structure exacte :
 {{
   "short_term_plan": [
-    {{"action": "Nom de l'action", "priority": "high", "channel": "Email", "expected_impact": "Description courte"}}
+    {{"action": "Nom de l'action", "priority": "high/medium/low", "channel": "Email/Instagram", "expected_impact": "Description courte"}}
   ],
-  "key_metrics_to_track": ["Open Rate", "Conversion Rate"],
+  "key_metrics_to_track": ["Open Rate", "Conversion Rate", "Engagement"],
   "overall_strategy": "Stratégie globale en une phrase"
 }}
 """
