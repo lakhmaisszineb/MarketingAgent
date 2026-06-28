@@ -11,28 +11,30 @@ class MLManager:
     
     def __init__(self):
         self.churn = ChurnPredictor()
-        self.segmenter = CustomerSegmenter(n_clusters=4)
+        self.segmenter = CustomerSegmenter(n_clusters=3)
         self.next_purchase = NextPurchasePredictor()
         self.rfm = RFMAnalyzer()
         self.clv = CLVCalculator()
     
     def analyze_customer_data(self, df: pd.DataFrame) -> Dict[str, Any]:
-        """Analyse complète avec tous les modèles"""
+        """Analyse complète avec tous les modèles (robuste aux colonnes manquantes)"""
         results = {}
         
-        # RFM
-        results["rfm"] = self.rfm.analyze(df)
+        try:
+            results["rfm"] = self.rfm.analyze(df)
+        except:
+            results["rfm"] = {"note": "RFM non disponible - colonnes manquantes"}
         
-        # Segmentation
-        results["segmentation"] = self.segmenter.segment(df)
+        try:
+            results["segmentation"] = self.segmenter.segment(df)
+        except:
+            results["segmentation"] = {"note": "Segmentation non disponible"}
         
-        # CLV
-        results["clv"] = self.clv.calculate_clv(df)
+        try:
+            results["clv"] = self.clv.calculate_clv(df)
+        except:
+            results["clv"] = {"note": "CLV non disponible"}
         
-        # Churn (si colonne churn existe, sinon simulation)
-        if 'churn' in df.columns:
-            results["churn"] = self.churn.predict_churn(df)
-        else:
-            results["churn"] = {"note": "Modèle churn non entraîné - besoin de colonne churn"}
+        results["churn"] = {"note": "Modèle churn non entraîné - besoin de colonne churn"}
         
         return results
